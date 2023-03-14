@@ -18,4 +18,4 @@ rm -rf sonar-scanner-cli-4.7.0.2747-linux.zip
 git clone https://$token@github.com/illuminateeducation/sc-suite-staff
 ant -f build.xml
 cd /home/sonar-scanner-4.7.0.2747-linux/bin
-./sonar-scanner -Dsonar.login=$sonartoken
+#./sonar-scanner -Dsonar.login=$sonartoken
