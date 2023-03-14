@@ -8,8 +8,6 @@ ARG sonartoken
 
 WORKDIR /home
 
-COPY .env .
-
 RUN apt-get update
 
 COPY build.xml ./
