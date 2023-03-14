@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!-- 
+    Company Name 	 : Schoolcity Inc.
+    FileName         : build.xml.
+    Purpose          : To create the war file in deployment.
+    Date of create   : 13-12-2013  
+    Application Name : STARS3K 	
+    Author		     : R.ANANDAN
+    Version          : 1.0.0
+ -->
+<project name="STARS" default="JavaSourceFile" basedir=".">	
+<!--
+///////////////////// USER INTERFACE PROPERTY///////////////////////////////////////  -->	
+	<property name="project.dir"	 		value="./sc-suite-staff"/>
+	<property name="jboss.home" 			value="./wildfly-26.0.1.Final"/> 
+	<property name="server.dir"    			value="${jboss.home}/standalone/deployments"/>    
+	<property name="buildwar.home"     		value="${server.dir}/stars.war"/>
+	<property name="workspace.dir"     		value="${project.dir}"/>
+	<property name="srcweb.home"      		value="${workspace.dir}/java"/>
+	<property name="web.home"  			    value="${workspace.dir}"/>
+	
+<!--  ==================== Compilation Control Options ==================== -->
+	
+	<property name="compile.debug"       value="true"/>
+  	<property name="compile.deprecation" value="true"/>
+  	<property name="compile.optimize"    value="true"/>
+	
+<!-- ==================== Compilation Classpath =========================== -->
+	<path id="compile.classpath">
+		<pathelement location="${jboss.home}/commserver.diron/classes"/>
+			<fileset dir="${jboss.home}/modules">
+	  			<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${jboss.home}/standalone/lib/">
+			  			<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${jboss.home}/modules/system/layers/base/javax/servlet/api/main">
+	  			<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${jboss.home}/modules/system/layers/base/org/hibernate/main">
+	  			<include name="*.jar"/>
+			</fileset>
+			<pathelement location="${jboss.home}/shared/classes"/>
+			<fileset dir="${workspace.dir}/WebContent/WEB-INF/lib">
+	      		<include name="*.jar"/>
+			</fileset>
+	</path>
+<!-- ==================== Clean Target ==================================== -->
+	<target name="JavaSourceFile" depends="prepare"
+		description="Compile Java sources">
+			<mkdir dir="${buildwar.home}/WEB-INF/classes"/>
+			<javac fork="true"
+		  		srcdir="${srcweb.home}"
+		        destdir="${buildwar.home}/WEB-INF/classes"
+		        debug="${compile.debug}"
+		      	deprecation="${compile.deprecation}"
+		        optimize="${compile.optimize}"
+			    memoryinitialsize="512m"
+		 	    memorymaximumsize="1024m">
+		        <classpath refid="compile.classpath"/>
+			</javac>
+		    <copy todir="${buildwar.home}/WEB-INF/classes">
+				<fileset dir="${srcweb.home}" excludes="**/*.java"/>
+		    </copy>
+		    <!-- <jar basedir="${buildwar.home}/WEB-INF/classes" excludes="**/*.properties" jarfile="${buildwar.home}\WEB-INF\lib\apqc_stars.jar"/> -->
+		<echo message="The war file created Successfully.....!!!!!"/>
+	</target>
+	<target name="prepare">
+		<property environment="env"/>
+	    <!-- Create build directories as needed -->
+	  	<mkdir dir="${buildwar.home}"/>
+	    <mkdir dir="${buildwar.home}/WEB-INF"/>
+	    <mkdir dir="${buildwar.home}/WEB-INF/classes"/>
+			<!-- Copy static content of this web application -->
+	    <copy todir="${buildwar.home}">
+	      <fileset dir="${web.home}" excludes="**/WebContent/**,**/java/**,**/build/**,**/java/**,**/deploy/**,**/lib/*.jar,**/bin/**,**/.settings/**,**/*.classpath,,**/*.project"/>
+	    </copy>
+		<!-- Under WEB-INF all folder copy -->
+		<copy todir="${buildwar.home}/WEB-INF">
+	      	<fileset dir="${web.home}/WebContent/WEB-INF" excludes="**/WebContent/**,**/java/**,**/build/**,**/java/**,**/deploy/**,**/lib/*.jar,**/bin/**,**/.settings/**,**/*.classpath,,**/*.project"/>
+	    </copy>
+	</target>
+</project>
